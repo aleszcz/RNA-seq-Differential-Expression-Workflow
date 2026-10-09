@@ -44,10 +44,10 @@ Your original outline had the right backbone (FASTQ → align → count → DESe
 | Step | What you had | What's improved | Why |
 |---|---|---|---|
 | Download | "SRA explorer / GEO files" | ENA direct FASTQ links where possible, `prefetch` + `fasterq-dump` otherwise | ENA mirrors SRA and hosts FASTQ directly — no `.sra`→FASTQ conversion step needed, which is the single biggest time-saver in step 1 |
-| QC/trim | *(missing)* | `fastp` | Does adapter trimming + QC in one pass, much faster than the old FastQC+Trimmomatic combo, and writes an HTML/JSON report |
+| QC/trim |  | `fastp` | Does adapter trimming + QC in one pass, much faster than the old FastQC+Trimmomatic combo, and writes an HTML/JSON report |
 | HISAT2 command | `hisat2_[options]* -x<bt2-idx> {-1<m1>-2<m2>1.4cr} [-s<sam>` | corrected flag syntax below | the flags were run together and missing the index-build step entirely |
 | Splice awareness | *(not used)* | `--known-splicesite-infile` built from the GTF | meaningfully improves junction alignment accuracy over vanilla HISAT2, and takes one extra script you already have (bundled with HISAT2) |
-| SAM handling | *(missing)* | `samtools sort` + `samtools index` into BAM | HTSeq/featureCounts and all downstream QC tools need sorted, indexed BAM, not raw SAM |
+| SAM handling |  | `samtools sort` + `samtools index` into BAM | HTSeq/featureCounts and all downstream QC tools need sorted, indexed BAM, not raw SAM |
 | Counting | HTSeq | **featureCounts** (Subread), HTSeq as fallback | faster, handles paired-end and multi-mapping reads more robustly, and is more actively maintained; HTSeq is still fine if your lab's existing scripts expect its output format |
 | LFC estimates | plain DESeq2 output | `lfcShrink()` with `apeglm` | apeglm shrinkage is now the DESeq2-recommended default for ranking/visualizing fold changes — raw LFCs from low-count genes are noisy |
 | Whole pipeline | manual bash, step by step | optional: **nf-core/rnaseq** (Nextflow) | if you'll run this on more than a couple of sample sets, nf-core/rnaseq wraps steps 1–7 in one containerized, resumable pipeline with QC built in — worth knowing about even if you run the manual version below for learning purposes |
